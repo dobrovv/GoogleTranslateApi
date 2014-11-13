@@ -8,9 +8,12 @@ The gadget uses HTTP GET Method to fech data from the server
 ```
 Base Url: https://translate.google.com/translate_a/single
 Example query: ?client=t&sl=en&tl=fr&hl=en&dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&dt=sw&q=Hello
+
+Example responce:
+[[["Bonjour","Hello"]],[["interjection",["Bonjour!","Salut!","Tiens!","Allô!"],[["Bonjour!",["Hello!","Hi!","Good morning!","Good afternoon!","Welcome!","How do you do?"],,0.7548396],["Salut!",["Hi!","Hello!","Salute!","All the best!","Hallo!","Hullo!"],,0.032144949],["Tiens!",["Hallo!","Hello!","Hullo!","Why!"]],["Allô!",["Hello!","Hullo!","Hallo!"]]],"Hello!",9]],"en",,[["Bonjour",[1],true,false,1000,0,1,0]],[["Hello",1,[["Bonjour",1000,true,false]],[[0,5]],"Hello",0,1]],,,[["en"],,[0.63999999]],,,[["noun",[[["howdy","hullo","hi","how-do-you-do"],""]],"hello"],["exclamation",[[["hi","howdy","hey","hiya","ciao","aloha"],"m_en_us1254307.001"]],"hello"]],[["noun",[["an utterance of “hello”; a greeting.","m_en_us1254307.006","she was getting polite nods and hellos from people"]],"hello"],["exclamation",[["used as a greeting or to begin a telephone conversation.","m_en_us1254307.001","hello there, Katie!"]],"hello"],["verb",[["say or shout “hello”; greet someone.","m_en_us1254307.007","‘Hi Kirsten,’ he helloed , obviously calling me Kirsten on purpose."]],"hello"]],,[["hello"]]]
 ```
 
-The format of the Translate's reply is described using the BNF-syntax.
+The format of the Translate's responce is described using the BNF-syntax.
 
 see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi/blob/master/GoogleWebTranslateFormat.txt) for additional examples
 
