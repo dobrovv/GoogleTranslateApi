@@ -1,4 +1,4 @@
-GoogleTranslateApi
+Google Translate Api
 ==================
 
 Reverse engineering of the Google Website Translator gadget's api
