@@ -1,4 +1,4 @@
-#include "gtapi.h"
+#include "GTApi.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -27,12 +27,16 @@ void GTApi::translate(const QString &text, const QString &targetLang, const QStr
     query.addQueryItem("hl", hlLang); // language for naming the "parts of speech".
     query.addQueryItem("ie", "UTF-8");
     query.addQueryItem("oe", "UTF-8");
+
+    //dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&dt=sw
     query.addQueryItem("dt", "bd");query.addQueryItem("dt", "ex");query.addQueryItem("dt", "ld");query.addQueryItem("dt", "md");
     query.addQueryItem("dt", "qc");query.addQueryItem("dt", "rw");query.addQueryItem("dt", "rm");query.addQueryItem("dt", "ss");
     query.addQueryItem("dt", "t"); query.addQueryItem("dt", "at");query.addQueryItem("dt", "sw");
+
     //query.addQueryItem("prev", "btn"); query.addQueryItem("rom", "1"); query.addQueryItem("srcrom", "1"); query.addQueryItem("ssel", "3"); query.addQueryItem("tsel", "0");
-    //dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&dt=sw
+
     query.addQueryItem("q", text);
+
     translateUrl.setQuery(query);
 
     QNetworkRequest request(translateUrl);
@@ -46,28 +50,14 @@ void GTApi::translate(const QString &text, const QString &targetLang, const QStr
 }
 
 void GTApi::onReplyFinished() {
-    QNetworkReply *reply = reinterpret_cast<QNetworkReply*>(sender());
+    QNetworkReply *googleTranslateReply = reinterpret_cast<QNetworkReply*>(sender());
 
-    if (reply->error()) {
-        //gtReply.setNetworkErrorMessage(reply->errorString());
-        qWarning() << Q_FUNC_INFO << "Network Error: " << reply->errorString();
+    if (googleTranslateReply->error()) {
+        qWarning() << Q_FUNC_INFO << "Network Error: " << googleTranslateReply->errorString();
     }
 
-    QByteArray rawReply = reply->readAll();
-    GTReplyObject gtObject;
-    if ( !rawReply.isEmpty() ){
-        qDebug() << "[Parser] Starting";
-        gtObject = GTReplyObject::fromRawString(rawReply);
-        qDebug() << "[Parser] No errors: " << (QString(rawReply) == gtObject.toRawString());
-    } else {
-        qDebug() << Q_FUNC_INFO << "Empty Reply";
-    }
-    GTApiTranslation gtApiTr(gtObject);
-    //QUrlQuery query (reply->request().url());
-    //gtReply.query_srclang = query.queryItemValue("sl");
-    //gtReply.query_dstlang = query.queryItemValue("tl");
-    //gtReply.query_hllang  = query.queryItemValue("hl");
-
+    GTApiTranslation gtApiTr(googleTranslateReply);
     emit translationReady(gtApiTr);
-    reply->deleteLater();
+
+    googleTranslateReply->deleteLater();
 }

@@ -1,22 +1,44 @@
-#include "gtapitranslation.h"
+#include "GTApiTranslation.h"
 
 #include <QDebug>
 
-GTApiTranslation::GTApiTranslation(const GTReplyObject & gtReplyObject)
-    : root(gtReplyObject)
-{
+#include <QRegularExpression>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrlQuery>
 
+static QString replaceUnicodeChars (QString text);
+
+GTApiTranslation::GTApiTranslation(QNetworkReply *googleTranslateReply)
+{
+    QUrlQuery googleQuery (googleTranslateReply->request().url());
+    querySourceLang  = googleQuery.queryItemValue("sl");
+    queryTargetLang  = googleQuery.queryItemValue("tl");
+    queryHlLang      = googleQuery.queryItemValue("hl");
+    queryErrorString = googleTranslateReply->errorString();
+
+    rawReply   =  QString::fromUtf8( googleTranslateReply->readAll() );
+
+    if ( !rawReply.isEmpty() ){
+        qDebug() << "[Parser] Starting";
+        root = GTReplyObject::fromRawString(rawReply);
+        qDebug() << "[Parser] Parsed without errors: " << (rawReply == root.toRawString());
+    } else {
+        qDebug() << Q_FUNC_INFO << "Empty Reply";
+    }
 }
 
 QStringList GTApiTranslation::translation() const
 {
     QStringList res;
 
+    /* fetch sentences from Transation and Translit */
     foreach( const GTReplyObject &sentence, root[0] ){
         res << sentence[0].toString();
     }
 
-    if (!res.isEmpty())
+    /* remove Translit if it exists */
+    if (!res.isEmpty() && !translit().isEmpty())
         res.removeLast();
 
     return res;
@@ -25,10 +47,13 @@ QStringList GTApiTranslation::translation() const
 QStringList GTApiTranslation::original() const
 {
     QStringList res;
+
+    /* fetch sentences from Transation and Translit */
     foreach( const GTReplyObject &sentence, root[0] )
         res << sentence[1].toString();
 
-    if (!res.isEmpty())
+    /* remove Translit sentece if it exists */
+    if (!res.isEmpty() && !translit().isEmpty())
         res.removeLast();
 
     return res;
@@ -36,7 +61,27 @@ QStringList GTApiTranslation::original() const
 
 QString GTApiTranslation::translit() const
 {
-    return root[0][ root[0].size()-1 ][2].toString();
+    QString res;
+    const GTReplyObject & translitObj = root[0][ root[0].size()-1 ];
+    if (translitObj.type() != GTReplyObject::UNDEF && translitObj.size() >= 4 )
+        res = translitObj[2].toString();
+
+    return res;
+}
+
+QString GTApiTranslation::sourceTranslit() const
+{
+    QString res;
+    const GTReplyObject & translitObj = root[0][ root[0].size()-1 ];
+    if (translitObj.type() != GTReplyObject::UNDEF && translitObj.size() >= 4 )
+        res = translitObj[3].toString();
+
+    return res;
+}
+
+QString GTApiTranslation::detectedSourceLang() const
+{
+    return root[2].toString();
 }
 
 QList<GTLangDetect> GTApiTranslation::detectedSourceLanguages() const
@@ -57,14 +102,13 @@ QStringList GTApiTranslation::seeAlsoList() const
     return root[14][0].toStringList();
 }
 
-QString GTApiTranslation::sourceTranslit() const
+QString GTApiTranslation::spellChecked(bool formatted) const
 {
-    return root[0][ root[0].size()-1 ][3].toString();
-}
-
-QString GTApiTranslation::detectedSourceLang() const
-{
-    return root[2].toString();
+    if ( formatted ){
+        return replaceUnicodeChars(root[7][0].toString());
+    } else {
+        return root[7][1].toString();
+    }
 }
 
 QList<GTPosDict> GTApiTranslation::getPosDictionary() const
@@ -151,7 +195,7 @@ GTExampleDict GTApiTranslation::getExampleDictionary() const
     foreach (const GTReplyObject & gtDictEntry, root[13][0]) {
 
         GTExampleDictEntry dictExampleEntry;
-        dictExampleEntry.example  = gtDictEntry[0].toString();
+        dictExampleEntry.exampleFormatted  = replaceUnicodeChars(gtDictEntry[0].toString());
         dictExampleEntry.word_id  = gtDictEntry[5].toString();
 
         dictExample.entries.push_back(dictExampleEntry);
@@ -163,4 +207,12 @@ GTExampleDict GTApiTranslation::getExampleDictionary() const
 const GTReplyObject & GTApiTranslation::replyObjectRef() const
 {
     return root;
+}
+
+// replce unicode chars \u003c and \u003e
+static QString replaceUnicodeChars (QString text){
+    text.replace(QRegularExpression("\\\\u003c"), "<");
+    text.replace(QRegularExpression("\\\\u003e"), ">");
+    qDebug() << text;
+    return text;
 }

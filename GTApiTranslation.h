@@ -9,6 +9,7 @@
 #include "GTReplyObject.h"
 
 #include <QStringList>
+class QNetworkReply;
 
 struct GTPosDict;
 struct GTPosDictEntry;
@@ -32,24 +33,29 @@ class GTApiTranslation
 {
     GTReplyObject root;
 
-    QString queryRawReply;
+    QString rawReply;
     QString queryTargetLang;
     QString querySourceLang;
     QString queryHlLang;
     QString queryErrorString;
 
+    explicit GTApiTranslation( QNetworkReply * googleTranslateReply );
+
 public:
-    GTApiTranslation( const GTReplyObject &);
 
     QStringList translation() const;
     QStringList original() const;
+
     QString translit() const;
     QString sourceTranslit() const;
+
     QString detectedSourceLang() const;
 
-    // returns a list holding the detected languages and reliability of the detection( from 0 to 1.0)
+    // returns a list holding detected languages and reliability of the detection( from 0 to 1.0)
     QList<GTLangDetect> detectedSourceLanguages() const;
+
     QStringList seeAlsoList() const;
+    QString     spellChecked( bool formatted = false ) const;
 
     // Dictionaries
     QList<GTPosDict> getPosDictionary() const;
@@ -57,9 +63,10 @@ public:
     QList<GTDefDict> getDefDictionary() const;
     GTExampleDict getExampleDictionary() const;
 
-    // returns a reference to raw object
+    // returns a reference to read-only root
     const GTReplyObject & replyObjectRef() const;
 
+    friend class GTApi;
 };
 
 /////////////////////////////
@@ -118,7 +125,7 @@ struct GTExampleDict{
 };
 
 struct GTExampleDictEntry{
-    QString example;
+    QString exampleFormatted;
     QString word_id;
 };
 

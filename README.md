@@ -28,7 +28,7 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
  <NotVeryUseful>,
  <NotVeryUseful>,
  ?,
- ?,
+ <SpellChecker>,                // Spell checker
  <LangDetect>,
  ?,
  ?,
@@ -50,7 +50,13 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
     translit_source
 ]
 
-<LangDetect> :: = [                 // Contains the list of detected source langugages and detection reliability.
+<SpellChecker> ::= [
+    correct_source_frmt,            // Formatted (using html tags) correction of the original
+    correct_source,                 // Correction of the original
+    [?]
+]
+
+<LangDetect> :: = [                 // Contains the list of detected source languages and detection reliability.
     [detected_source_lang*],        // iso639-1 language code (example ["en", "fr"] )
     ?,                              // probably it's depricated isReliable parameter
     [detected_source_confidence*]   // reliability (0 to 1.0) (example [0.84434, 0.1] )
@@ -100,7 +106,7 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
 ]
 
 <ExampleDictEntry> ::= [
-    example,
+    example_source_frmt,    // Example in source language, is formatted (using html tags)
     ?,
     ?,
     ?,
@@ -122,5 +128,6 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
     8 |     // Pronoun
     9 |     // Interjection
    10       // Phrase
+
 
 ```

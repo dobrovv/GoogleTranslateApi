@@ -1,4 +1,4 @@
-#include "gtreplyobject.h"
+#include "GTReplyObject.h"
 
 #include <QDebug>
 #include <QRegularExpression>
@@ -37,6 +37,11 @@ bool GTReplyObject::isString() const
 bool GTReplyObject::isObject() const
 {
     return obj_type == ARRAY;
+}
+
+GTReplyObject::GTReplyObjectType GTReplyObject::type() const
+{
+    return obj_type;
 }
 
 ////////////

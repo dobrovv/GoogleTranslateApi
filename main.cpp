@@ -4,9 +4,9 @@
 #include <QtWidgets>
 
 ////////////////////////////////////////////////
-// Widget to test that everything still works (:
+// Widget that tests if everything still works (:
 
-class GTTestWidget: public QWidget{
+class GTTestWidget: public QWidget {
 
     Q_OBJECT
 
@@ -28,7 +28,7 @@ public:
         connect(gtApi, SIGNAL(translationReady(GTApiTranslation)), SLOT(onTranslationReady(GTApiTranslation)));
 
         lneSrcLang = new QLineEdit(this);
-        lneSrcLang->setText("ru");
+        lneSrcLang->setText("fr");
         lneSrcLang->setInputMask("AA");
         lneSrcLang->setFixedSize(lneSrcLang->minimumSizeHint());
 
@@ -80,6 +80,10 @@ public slots:
             } else if (child == 2) {
                 childDescription = "detected_source_lang";
                 comment = QString("Detected Source Language: %1\n").arg(gtApiTr.detectedSourceLang());
+
+            }else if (child == 7) {
+                childDescription="<SpellChecker>";
+                comment = QString("Spell Checker:\n\t%1\nFormatted:\n\t%2\n").arg(gtApiTr.spellChecked(), gtApiTr.spellChecked(true));
 
             } else if (child == 8) {
                 childDescription = "<LangDetect>";
@@ -143,7 +147,7 @@ public slots:
 
                 GTExampleDict dict = gtApiTr.getExampleDictionary();
                 foreach (const GTExampleDictEntry & entry, dict.entries) {
-                    comment += QString("\t[%1] : %2\n").arg(entry.word_id, entry.example);
+                    comment += QString("\t[%1] : %2\n").arg(entry.word_id, entry.exampleFormatted);
                 }
             }
 
