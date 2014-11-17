@@ -18,24 +18,24 @@ The format of the Translate's responce is described using the BNF-syntax.
 see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi/blob/master/GoogleWebTranslateFormat.txt) for additional examples
 
 ```
+
 <HttpGetReply> ::=
 [
- [<Translation>*, <Translit>],
- [<PosDict>*],
- lang_source_abrev,            // iso639-1 source language code (ex. en | fr)
+ [<Translation>*, <Translit>],  // Translit can be empty
+ [<PosDict>*],                  // Part-of-speech
+ detected_source_lang,          // iso639-1 source language code (ex. en | fr)
  ?,
- ?(!),
- ?(!),
- ?,
- ?,
- ?(!),
+ <NotVeryUseful>,
+ <NotVeryUseful>,
  ?,
  ?,
- [<SynonymDict>*],
- [<DefineDict>*],
- [<ExampleDict>],
- [<SeeAlsoDict>],
- server_time?
+ <LangDetect>,
+ ?,
+ ?,
+ [<SynDict>*],                  // Synonyms
+ [<DefDict>*],                  // Definitions
+ <ExampleDict>,
+ <SeeAlsoList>,
 ]
 
 <Translation> ::= [         // Pair of the translated sentence and it's original
@@ -48,6 +48,12 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
     ?,
     translit_target,
     translit_source
+]
+
+<LangDetect> :: = [                 // Contains the list of detected source langugages and detection reliability.
+    [detected_source_lang*],        // iso639-1 language code (example ["en", "fr"] )
+    ?,                              // probably it's depricated isReliable parameter
+    [detected_source_confidence*]   // reliability (0 to 1.0) (example [0.84434, 0.1] )
 ]
 
 <PosDict> ::= [             // Dictionary that contains Part's Of the Speech, word transl and retransl
@@ -102,8 +108,8 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
     word_id
 ]
 
-<SeeAlsoDict> ::= [
-    [SeeAlso*]              // list of suggestions to see
+<SeeAlsoList> ::= [
+    [SeeAlso_source*]   // list of suggestions to see
 ]
 
 <PosDictEnum> ::=          // an enum of possible part-of-speech for PosDict

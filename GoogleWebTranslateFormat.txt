@@ -1,7 +1,7 @@
 // Google Translate API description
-// Updated: 11/11/14
+// Updated: 2014/11/16
 
-// Reverse engineering of the Google Website Translator gadget's api
+// Reverse engineering of the Google Website Translator Gadget's api
 // The gadget uses HTTP GET Method to fech data from the server
 
 // Base Url: https://translate.google.com/translate_a/single
@@ -12,22 +12,21 @@
 
 <HttpGetReply> ::=
 [
- [<Translation>*, <Translit>],
- [<PosDict>*],
- lang_source_abrev,            // iso639-1 source language code (ex. en | fr)
+ [<Translation>*, <Translit>],  // Translit can be empty
+ [<PosDict>*],                  // Part-of-speech
+ detected_source_lang,          // iso639-1 source language code (ex. en | fr)
  ?,
- ?(!),
- ?(!),
- ?,
- ?,
- ?(!),
+ <NotVeryUseful>,
+ <NotVeryUseful>,
  ?,
  ?,
- [<SynonymDict>*],
- [<DefineDict>*],
- [<ExampleDict>],
- [<SeeAlsoDict>],
- server_time?
+ <LangDetect>,
+ ?,
+ ?,
+ [<SynDict>*],                  // Synonyms
+ [<DefDict>*],                  // Definitions
+ <ExampleDict>,
+ <SeeAlsoList>,
 ]
 
 <Translation> ::= [         // Pair of the translated sentence and it's original
@@ -40,6 +39,12 @@
     ?,
     translit_target,
     translit_source
+]
+
+<LangDetect> :: = [                 // Contains the list of detected source langugages and detection reliability.
+    [detected_source_lang*],        // iso639-1 language code (example ["en", "fr"] )
+    ?,                              // probably it's depricated isReliable parameter
+    [detected_source_confidence*]   // reliability (0 to 1.0) (example [0.84434, 0.1] )
 ]
 
 <PosDict> ::= [             // Dictionary that contains Part's Of the Speech, word transl and retransl
@@ -94,8 +99,8 @@
     word_id
 ]
 
-<SeeAlsoDict> ::= [
-    [SeeAlso*]              // list of suggestions to see
+<SeeAlsoList> ::= [
+    [SeeAlso_source*]   // list of suggestions to see
 ]
 
 <PosDictEnum> ::=          // an enum of possible part-of-speech for PosDict
@@ -178,7 +183,8 @@
             "hello"
         ],
         [
-            "exclamation",[["used as a greeting or to begin a telephone conversation.","m_en_us1254307.001","hello there, Katie!"]],
+            "exclamation",
+            [["used as a greeting or to begin a telephone conversation.","m_en_us1254307.001","hello there, Katie!"]],
             "hello"
         ],
         [   "verb",

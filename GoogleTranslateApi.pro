@@ -12,4 +12,5 @@ HEADERS += \
     GTApi.h
 
 OTHER_FILES += \
-    GoogleWebTranslateFormat.txt
+    GoogleWebTranslateFormat.txt \
+    README.md

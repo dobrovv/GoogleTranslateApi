@@ -1,3 +1,8 @@
+///////////////////////////////////////////////////////////////
+// This class implements only the parser
+//      for replies fetched from Google Translate Web Gadget
+// GTApiTranslate provides an interface for desired information
+
 #ifndef GTREPLYOBJECT_H
 #define GTREPLYOBJECT_H
 
@@ -38,7 +43,7 @@ public:
     }
 
     static GTReplyObject fromRawString (const QString& rawReply);
-    QString toRawString() const;
+    QString toRawString(bool prettyDecoded = false) const;
 
     enum GTReplyObjectType {UNDEF=0, BOOL, NUM, STRING, ARRAY};
 

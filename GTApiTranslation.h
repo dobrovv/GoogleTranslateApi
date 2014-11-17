@@ -1,3 +1,8 @@
+///////////////////////////////////////////////////////////////////////////
+// This class provides an interface to get the desired information
+//      from the Google Translate Web Gadget
+// It's returned from GTApi::translate() function
+
 #ifndef GTAPITRANSLATION_H
 #define GTAPITRANSLATION_H
 
@@ -8,11 +13,20 @@
 struct GTPosDict;
 struct GTPosDictEntry;
 enum   GTPosDictEnum {
-    NOUN=1, VERB=2, ADJECTIVE=3, PREPOSITION=5, ABBREVIATION=6, CONJUNCTION=7, PRONOUN=8, INTERJECTION=9, PHRASE=10
+    NOUN=1, VERB=2, ADJECTIVE=3, PREPOSITION=5, ABBREVIATION=6,
+    CONJUNCTION=7, PRONOUN=8, INTERJECTION=9, PHRASE=10
 };
+
+typedef QPair<QString, qreal> GTLangDetect;
+
+struct GTSynDict;
+struct GTSynDictEntry;
 
 struct GTDefDict;
 struct GTDefDictEntry;
+
+struct GTExampleDict;
+struct GTExampleDictEntry;
 
 class GTApiTranslation
 {
@@ -30,14 +44,21 @@ public:
     QStringList translation() const;
     QStringList original() const;
     QString translit() const;
-    QString srcTranslit() const;
-    QString srcLang() const;
+    QString sourceTranslit() const;
+    QString detectedSourceLang() const;
 
-    const GTReplyObject & replyObjectRef() const;
+    // returns a list holding the detected languages and reliability of the detection( from 0 to 1.0)
+    QList<GTLangDetect> detectedSourceLanguages() const;
+    QStringList seeAlsoList() const;
 
     // Dictionaries
     QList<GTPosDict> getPosDictionary() const;
+    QList<GTSynDict> getSynDictionary() const;
     QList<GTDefDict> getDefDictionary() const;
+    GTExampleDict getExampleDictionary() const;
+
+    // returns a reference to raw object
+    const GTReplyObject & replyObjectRef() const;
 
 };
 
@@ -60,6 +81,20 @@ struct GTPosDictEntry{
     QString previousWordTarge;
 };
 
+//////////////////////////
+// Synonym Dictionary
+
+struct GTSynDict{
+    QString posName;
+    QList<GTSynDictEntry> entries;
+    QString wordBaseForm;
+};
+
+struct GTSynDictEntry {
+    QStringList synonyms;
+    QString word_id;
+};
+
 /////////////////////////
 // Definition Dictionary
 
@@ -73,6 +108,18 @@ struct GTDefDictEntry{
     QString definition;
     QString word_id;
     QString definitionExampleUsage;
+};
+
+/////////////////////////
+// Examples Dictionary
+
+struct GTExampleDict{
+    QList<GTExampleDictEntry> entries;
+};
+
+struct GTExampleDictEntry{
+    QString example;
+    QString word_id;
 };
 
 #endif // GTAPITRANSLATION_H
