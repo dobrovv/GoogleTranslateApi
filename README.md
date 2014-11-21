@@ -15,8 +15,6 @@ Example responce:
 
 The format of the Translate's responce is described using the BNF-syntax.
 
-see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi/blob/master/GoogleWebTranslateFormat.txt) for additional examples
-
 ```
 
 <HttpGetReply> ::=
@@ -131,3 +129,4 @@ see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi
 
 
 ```
+see [GoogleWebTranslateFormat.txt](https://github.com/VaSaKed/GoogleTranslateApi/blob/master/GoogleWebTranslateFormat.txt) for additional examples
