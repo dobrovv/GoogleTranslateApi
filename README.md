@@ -1,9 +1,9 @@
 Google Translate Api
 ==================
 
-Reverse engineering of the Google Website Translator gadget's api
+Reverse engineering of the Google Online Translator responce file format
 
-The gadget uses HTTP GET Method to fech data from the server
+The gadget's api uses HTTP GET Method to fech data from the server
 
 ```
 Base Url: https://translate.google.com/translate_a/single
