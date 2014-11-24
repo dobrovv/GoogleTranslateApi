@@ -14,7 +14,7 @@ GTApi::GTApi(QObject *parent) :
 
 GTApi::~GTApi() {}
 
-void GTApi::translate(const QString &text, const QString &targetLang, const QString &sourceLang, const QString &hlLang)
+void GTApi::translate(const QString &text, const QString &targetLang, const QString &sourceLang, const QString &interfaceLang)
 {
     /*Google Translate URL*/
     QUrl translateUrl = QString("https://translate.google.com/translate_a/single");
@@ -24,7 +24,7 @@ void GTApi::translate(const QString &text, const QString &targetLang, const QStr
     query.addQueryItem("client", "t"); // client=j - responce is in json
     query.addQueryItem("sl", sourceLang);
     query.addQueryItem("tl", targetLang);
-    query.addQueryItem("hl", hlLang); // language for naming the "parts of speech".
+    query.addQueryItem("hl", interfaceLang); // language for naming the "parts of speech".
     query.addQueryItem("ie", "UTF-8");
     query.addQueryItem("oe", "UTF-8");
 

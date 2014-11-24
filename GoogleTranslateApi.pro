@@ -9,7 +9,8 @@ SOURCES += \
 HEADERS += \
     GTApiTranslation.h \
     GTReplyObject.h \
-    GTApi.h
+    GTApi.h \
+    GTLangCode.h
 
 OTHER_FILES += \
     GoogleWebTranslateFormat.txt \

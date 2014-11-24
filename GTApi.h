@@ -20,8 +20,11 @@ signals:
     void translationReady( const GTApiTranslation & gtApiTr );
 
 public slots:
+
+    // Translates the text, parsed responce is returned with the translationReady signal
     void translate(const QString& text, const QString& targetLang,
-                   const QString& sourceLang = "auto", const QString& hlLang = "en");
+                   const QString& sourceLang = "auto", const QString& interfaceLang = "en");
+
 private slots:
     void onReplyFinished();
 };
